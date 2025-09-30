@@ -9,7 +9,7 @@ If you ned to install GreaseMonkey first, click <a href="https://addons.mozilla.
 
 # To use this script.
 <br>1. Once installed log in to your Kroger (or one of thier family of stores, it mgiht work there too) account and navigate to your Purchase History page.
-<br>2. Then click on the <em>See Order Details</em> link and when that page opens and finishes painting you will see a gray button in the upper left of the page that says "Get List".
+<br>2. Then click on the <em>See Order Details</em> link and when that page opens and finishes painting you will see a green button in the upper right of the page that says "Get Grocery List".  Occasionally I've had to force a reload of the page to get it to appear.
 <br>3. Click it.  Momentarily you will be prompted to save your CSV file.
 <br>Presently it only works for <em>In-store purchases</em> and <em>Fuel center purchases</em>, but not for <em>Pick ups</em>.
 
@@ -18,7 +18,7 @@ If you ned to install GreaseMonkey first, click <a href="https://addons.mozilla.
 
 # Status
 <br>This is a beta version of the export, but I wanted to get it out here so others could eyeball it and make suggestions.  Or heck, throw in some bug fixes. :D
-<br>So far this is only tested on Firefox and Windows 10.  If you have a Mac and would like to contribute, or just identify issues, please do. 
+<br>So far this is only tested on Firefox/LibreWolf/WaterFox and Windows 10.  If you have a Mac and would like to contribute, or just identify issues, please do. 
 
 Here is a sample data set
 
