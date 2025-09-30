@@ -20,9 +20,8 @@ If you ned to install GreaseMonkey first, click <a href="https://addons.mozilla.
 <br>This is a beta version of the export, but I wanted to get it out here so others could eyeball it and make suggestions.  Or heck, throw in some bug fixes. :D
 <br>So far this is only tested on Firefox/LibreWolf/WaterFox and Windows 10.  If you have a Mac and would like to contribute, or just identify issues, please do. 
 
-Here is a sample data set
-
-![image](https://user-images.githubusercontent.com/1949042/110583400-42440000-8133-11eb-939c-ffdab40db8c5.png)
+Here is a sample data set<br>
+<img width="817" height="100" alt="Untitled" src="https://github.com/user-attachments/assets/b10f4135-4360-47d2-8037-e5ec1c6fd49c" />
 
 The extended price does not always match the unit price because it contains discounts and coupons which are not shown in the CSV file.  This shopping trip was in Texas where food has no tax and includes no non-food items so I don't have an example of that kind of data either.
 
