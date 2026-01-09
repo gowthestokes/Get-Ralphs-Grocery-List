@@ -51,6 +51,10 @@
 
 (function(){
   'use strict';
+  // Immediate test to confirm script is running
+  console.log('=== Grocery List Script Loaded ===');
+  console.log('URL:', window.location.href);
+    
   var debug = true;  // Enable debug mode to troubleshoot issues
 
   // Log function for debugging
