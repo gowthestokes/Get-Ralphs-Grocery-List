@@ -4,7 +4,9 @@
 // @version      0.7
 // @description  Get Grocery Shopping History
 // @author       ThermoMan
-// @match        https://www.(dillons|kroger|ralphs).com/mypurchases/detail/*
+// @match        https://www.dillons.com/mypurchases/detail/*
+// @match        https://www.kroger.com/mypurchases/detail/*
+// @match        https://www.ralphs.com/mypurchases/detail/*
 // @run-at       document-end
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js
 // ==/UserScript==
