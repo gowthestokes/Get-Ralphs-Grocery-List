@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Get Grocery Shopping History
 // @namespace    PrettyDarnUseful
-// @version      0.6
+// @version      0.7
 // @description  Get Grocery Shopping History
 // @author       ThermoMan
 // @match        https://www.(dillons|kroger|ralphs).com/mypurchases/detail/*
@@ -49,7 +49,7 @@
 
 (function(){
   'use strict';
-  var debug = false;
+  var debug = true;  // Enable debug mode to troubleshoot issues
 
   // Log function for debugging
   function log( pMessage ){
@@ -76,6 +76,7 @@
       var tripDate = window.location.href.split('~')[2];
       log( 'Date of purchase was: ' + tripDate );
       var storeName = window.location.href.split('.')[1];
+      log( 'Store name: ' + storeName );
 
       var product;
       var productName;
@@ -90,7 +91,26 @@
       var message;
       var ii = 0;
       var saveString = "STORE,DATE,MESSAGE,NAME,SIZE,UNITS,COUNT,UNIT_PRICE,QTY,EXT_PRICE\n";
-      $( 'div[class="PH-ProductCard-container w-full p-16"]' ).each( function(){
+      
+      // Try the original selector first
+      var productCards = $( 'div[class="PH-ProductCard-container w-full p-16"]' );
+      log( 'Found ' + productCards.length + ' cards with original selector' );
+      
+      // If that doesn't work, try a more flexible selector
+      if ( productCards.length === 0 ) {
+        productCards = $( 'div[class*="ProductCard"]' ).filter( function(){
+          var className = $( this ).attr( 'class' ) || '';
+          return className.indexOf( 'PH-ProductCard-container' ) >= 0;
+        });
+        log( 'Found ' + productCards.length + ' cards with flexible selector' );
+      }
+      
+      if ( productCards.length === 0 ) {
+        alert( 'No product cards found. Please check the console (F12) for debugging information.' );
+        throw new Error( 'No product cards found' );
+      }
+      
+      productCards.each( function(){
 //		    log( 'buttonClickAction looping: ' + ii );
         product = '';
         productName = '';
@@ -201,8 +221,9 @@ debugger;
     }
     catch( error ){
       log( 'Error in buttonClickAction: ' + error );
-      log( 'Last productName was ' + productName );
-      alert( 'Error message here - tell user there is no file ouput.' );
+      log( 'Error stack: ' + ( error.stack || 'No stack trace available' ) );
+      log( 'Last productName was ' + ( productName || 'undefined' ) );
+      alert( 'Error: ' + error.message + '\n\nCheck the console (F12) for more details.' );
     }
     finally{
       // Hide spinning notifier and re-enable button
@@ -214,6 +235,12 @@ debugger;
 
   function addToggleButton(){
     log( 'addToggleButton started' );
+    
+    // Check if button already exists to avoid duplicates
+    if ( $( '#rs_grocery_button' ).length > 0 ) {
+      log( 'Button already exists, skipping creation' );
+      return $( '#rs_grocery_button' )[0];
+    }
 
     var $button = $( '<button>', {
       id: 'rs_grocery_button',
@@ -307,11 +334,61 @@ debugger;
   }
 
 
-  function triggerThings(){
-    log( 'triggerThings' );
-    const button = addToggleButton();
-	  addToggleButton();
+  function waitForContent( maxAttempts, attempt ){
+    attempt = attempt || 0;
+    log( 'Waiting for content, attempt ' + ( attempt + 1 ) + ' of ' + maxAttempts );
+    
+    // Check if jQuery is loaded
+    if ( typeof jQuery === 'undefined' ) {
+      log( 'jQuery not loaded yet' );
+      if ( attempt < maxAttempts ) {
+        window.setTimeout( function(){ waitForContent( maxAttempts, attempt + 1 ); }, 500 );
+      }
+      return;
+    }
+    
+    // Try multiple selectors - the class might be slightly different
+    var productCards = $( 'div[class*="ProductCard"]' ).filter( function(){
+      var className = $( this ).attr( 'class' ) || '';
+      return className.indexOf( 'PH-ProductCard-container' ) >= 0 || 
+             className.indexOf( 'ProductCard' ) >= 0;
+    });
+    
+    log( 'Found ' + productCards.length + ' potential product cards' );
+    
+    if ( productCards.length === 0 ) {
+      if ( attempt < maxAttempts ) {
+        window.setTimeout( function(){ waitForContent( maxAttempts, attempt + 1 ); }, 1000 );
+      } else {
+        log( 'Giving up - no product cards found after ' + maxAttempts + ' attempts' );
+        log( 'Page URL: ' + window.location.href );
+        // Add button anyway so user can try manually
+        addToggleButton();
+      }
+      return;
+    }
+    
+    log( 'Content found! Adding button...' );
+    addToggleButton();
   }
 
-  window.setTimeout( triggerThings, 500 );
+  function triggerThings(){
+    log( 'triggerThings started' );
+    log( 'Current URL: ' + window.location.href );
+    log( 'jQuery available: ' + ( typeof jQuery !== 'undefined' ) );
+    
+    // Wait for content with multiple attempts
+    waitForContent( 10 );  // Try 10 times with 1 second intervals
+  }
+
+  // Start after a short delay to let the page start loading
+  window.setTimeout( triggerThings, 1000 );
+  
+  // Also try when DOM is ready
+  if ( document.readyState === 'loading' ) {
+    document.addEventListener( 'DOMContentLoaded', triggerThings );
+  } else {
+    // DOM is already ready
+    triggerThings();
+  }
 })();
